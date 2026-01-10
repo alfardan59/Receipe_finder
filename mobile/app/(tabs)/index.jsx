@@ -4,10 +4,11 @@ import { useRouter } from "expo-router";
 import { MealAPI } from "../../services/mealAPI";
 import { homeStyles } from "../../assets/styles/home.styles";
 import { Image } from "expo-image";
-import { COLORS } from "@/constants/colors";
+import { COLORS } from "../../constants/colors";
 import { Ionicons } from "@expo/vector-icons";
 import CategoryFilter from "../../components/CategoryFilter";
 import RecipeCard from "../../components/RecipeCard";
+import LoadingSpinner from "../../components/LoadingSpinner";
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -76,7 +77,7 @@ const HomeScreen = () => {
 
   const onRefresh = async () => {
     setRefreshing(true);
-    await sleep(2000);
+    // await sleep(2000);
     await loadData();
     setRefreshing(false);
   };
@@ -85,9 +86,11 @@ const HomeScreen = () => {
     loadData();
   }, []);
 
+  if (loading && !refreshing) return <LoadingSpinner message="Loading delicions recipes..." />;
+
   return (
     <View style={homeStyles.container}>
-       <ScrollView
+      <ScrollView
         showsVerticalScrollIndicator={false}
         refreshControl={
           <RefreshControl
@@ -114,36 +117,34 @@ const HomeScreen = () => {
               height: 100,
             }}
           />
-          <Image
-            source={require("../../assets/images/paneer.png")}
-            style={{
-              width: 100,
-              height: 100,
-            }}
-          />
+          
         </View>
 
         {/* FEATURED SECTION */}
         {featuredRecipe && (
           <View style={homeStyles.featuredSection}>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={homeStyles.featuredCard}
               activeOpacity={0.9}
-              onPress={() => router.push(`/recipe/${featuredRecipe.id}`)}>
+              onPress={() => router.push(`/recipe/${featuredRecipe.id}`)}
+            >
               <View style={homeStyles.featuredImageContainer}>
-                <Image  source={{ uri: featuredRecipe.image }}
+                <Image
+                  source={{ uri: featuredRecipe.image }}
                   style={homeStyles.featuredImage}
                   contentFit="cover"
-                  transition={500} 
+                  transition={500}
                 />
                 <View style={homeStyles.featuredOverlay}>
                   <View style={homeStyles.featuredBadge}>
                     <Text style={homeStyles.featuredBadgeText}>Featured</Text>
                   </View>
+
                   <View style={homeStyles.featuredContent}>
                     <Text style={homeStyles.featuredTitle} numberOfLines={2}>
                       {featuredRecipe.title}
                     </Text>
+
                     <View style={homeStyles.featuredMeta}>
                       <View style={homeStyles.metaItem}>
                         <Ionicons name="time-outline" size={16} color={COLORS.white} />
@@ -166,9 +167,15 @@ const HomeScreen = () => {
             </TouchableOpacity>
           </View>
         )}
-        {categories.length > 0 &&(
-          <CategoryFilter categories={categories} selectedCategory={selectedCategory} onSelectCategory={handleCategorySelect}/>
+
+        {categories.length > 0 && (
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={handleCategorySelect}
+          />
         )}
+
         <View style={homeStyles.recipesSection}>
           <View style={homeStyles.sectionHeader}>
             <Text style={homeStyles.sectionTitle}>{selectedCategory}</Text>
@@ -183,6 +190,7 @@ const HomeScreen = () => {
               columnWrapperStyle={homeStyles.row}
               contentContainerStyle={homeStyles.recipesGrid}
               scrollEnabled={false}
+              // ListEmptyComponent={}
             />
           ) : (
             <View style={homeStyles.emptyState}>
@@ -194,7 +202,6 @@ const HomeScreen = () => {
         </View>
       </ScrollView>
     </View>
-  )
-}
-
-export default HomeScreen
+  );
+};
+export default HomeScreen;

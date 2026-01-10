@@ -13,8 +13,7 @@ import {
 import { authStyles } from "../../assets/styles/auth.styles";
 import { Image } from "expo-image";
 import { COLORS } from "../../constants/colors";
-
-const VerifyEmailScreen = ({ email, onBack }) => {
+const VerifyEmail = ({ email, onBack }) => {
   const { isLoaded, signUp, setActive } = useSignUp();
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
@@ -100,4 +99,4 @@ const VerifyEmailScreen = ({ email, onBack }) => {
     </View>
   );
 };
-export default VerifyEmailScreen;
+export default VerifyEmail;
