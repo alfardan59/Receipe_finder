@@ -40,7 +40,7 @@ app.post("/api/favorites",async(req,res)=>{
     }
 });
 
-app.get("/api/favorites/:userId/", async(req,res)=>{
+app.get("/api/favorites/:userId", async(req,res)=>{
     try {
         const {userId}=req.params;
 
